@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karaoke Style Studio</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header>
+  <h1>Karaoke Style Studio</h1>
+  <p class="sub">Separate a song into stems, then remix the balance and tone — soft acoustic, modern punch, lo-fi, cinematic, or your own blend.</p>
+</header>
+
+<main>
+  <section class="panel" id="drop">
+    <input type="file" id="file" accept="audio/*,.mp3,.wav,.m4a,.flac,.aac,.ogg,.aiff,.wma" hidden>
+    <div class="drop-inner">
+      <div class="drop-icon">&#9834;</div>
+      <p class="drop-title">Drag a song here</p>
+      <p class="drop-hint">or <button class="link" id="browse">choose a file</button> &middot; mp3, wav, m4a, flac, aac, ogg &middot; 300 MB max</p>
+      <p class="file-name" id="fileName"></p>
+    </div>
+  </section>
+
+  <section class="panel controls">
+    <div class="ctl">
+      <label for="backend">Engine</label>
+      <select id="backend">
+        <option value="demucs">Studio &mdash; Demucs ML, 4 stems (best quality)</option>
+        <option value="ffmpeg">Fast &mdash; stereo mid/side, 2 stems (instant, rough)</option>
+      </select>
+      <span class="note" id="backendNote"></span>
+    </div>
+    <div class="ctl">
+      <label for="model">Model</label>
+      <select id="model">
+        <option value="htdemucs">htdemucs &mdash; balanced</option>
+        <option value="htdemucs_ft">htdemucs_ft &mdash; fine-tuned, slower</option>
+        <option value="mdx_extra">mdx_extra &mdash; alt. character</option>
+      </select>
+    </div>
+    <button id="go" class="primary" disabled>Separate stems</button>
+  </section>
+
+  <section class="panel progress hidden" id="progressPanel">
+    <div class="bar"><div class="fill" id="fill"></div></div>
+    <div class="prow"><span id="stage">Queued</span><span id="pct">0%</span></div>
+    <p class="note" id="meta"></p>
+  </section>
+
+  <section class="panel error hidden" id="errorPanel"></section>
+
+  <section class="panel hidden" id="studio">
+    <h2>Style the mix</h2>
+
+    <div class="ctl">
+      <label for="preset">Style preset</label>
+      <select id="preset"></select>
+      <p class="note" id="presetDesc"></p>
+    </div>
+
+    <div id="customTone" class="tone-grid hidden">
+      <div class="slider-row"><label>Warmth</label><input type="range" id="toneWarmth" min="-100" max="100" value="0"><span id="toneWarmthVal">0</span></div>
+      <div class="slider-row"><label>Brightness</label><input type="range" id="toneBrightness" min="-100" max="100" value="0"><span id="toneBrightnessVal">0</span></div>
+      <div class="slider-row"><label>Reverb / space</label><input type="range" id="toneReverb" min="0" max="100" value="0"><span id="toneReverbVal">0</span></div>
+      <div class="slider-row"><label>Punch / compression</label><input type="range" id="tonePunch" min="0" max="100" value="0"><span id="tonePunchVal">0</span></div>
+    </div>
+
+    <h3>Stem balance</h3>
+    <div class="slider-grid" id="stemSliders"></div>
+
+    <h3>Tempo &amp; key</h3>
+    <div class="tone-grid">
+      <div class="slider-row"><label>Tempo</label><input type="range" id="tempo" min="50" max="150" value="100"><span id="tempoVal">100%</span></div>
+      <div class="slider-row"><label>Key shift</label><input type="range" id="semitones" min="-6" max="6" value="0"><span id="semitonesVal">0 st</span></div>
+    </div>
+
+    <div class="ctl">
+      <label for="format">Download format</label>
+      <select id="format">
+        <option value="wav">WAV &mdash; lossless</option>
+        <option value="mp3">MP3 &mdash; 320 kbps</option>
+        <option value="m4a">M4A &mdash; AAC 256 kbps</option>
+        <option value="flac">FLAC &mdash; lossless compressed</option>
+      </select>
+    </div>
+
+    <button id="renderBtn" class="primary">Render styled track</button>
+    <p class="note" id="renderNote"></p>
+  </section>
+
+  <section id="results"></section>
+</main>
+
+<footer>Runs entirely on this Mac &mdash; audio never leaves the machine. Stem remix + DSP tone shaping, not instrument synthesis.</footer>
+<script src="./app.js"></script>
+</body>
+</html>
